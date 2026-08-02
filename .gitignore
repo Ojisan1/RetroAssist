@@ -72,10 +72,10 @@ chromadb/
 *.chroma/
 lancedb/
 
-# Session logs that may contain private visual context
-sessions/
+# Session logs that may contain private visual context (repo-root only)
+/sessions/
 *.session.md
-logs/
+/logs/
 
 # Private test fixtures (YouTube-derived / copyrighted frames — never commit)
 tests/fixtures/private/*
