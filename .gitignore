@@ -1,0 +1,86 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Packaging / uv
+uv.lock
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.pem
+secrets/
+
+# Local models and runtime data
+models/
+*.gguf
+*.bin
+!tests/**/*.bin
+
+# Vector store / knowledge base data (user-imported)
+data/
+kb/
+chroma/
+chromadb/
+*.chroma/
+lancedb/
+
+# Session logs that may contain private visual context
+sessions/
+*.session.md
+logs/
+
+# Private test fixtures (YouTube-derived / copyrighted frames — never commit)
+tests/fixtures/private/*
+!tests/fixtures/private/.gitkeep
+
+# Local config overrides
+config.local.yaml
+config.local.toml
