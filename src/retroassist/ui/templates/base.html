@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}RetroAssist{% endblock %}</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/">RetroAssist</a>
+    <nav>
+      <a href="/">Workbench</a>
+      <a href="/knowledge">Knowledge</a>
+      <a href="/settings">Settings</a>
+    </nav>
+    <div id="voice-status"
+         hx-get="/partials/voice-status"
+         hx-trigger="every 2s"
+         hx-swap="innerHTML">
+      {% include "partials/voice_status.html" %}
+    </div>
+  </header>
+
+  {% if flash %}
+  <p class="flash" role="status">{{ flash }}</p>
+  {% endif %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="foot">
+    <span>Local-first · you remain responsible</span>
+    <span>{% if state.mock %}mock agents{% else %}live models{% endif %} · {{ speech_mode }}</span>
+  </footer>
+</body>
+</html>

@@ -502,24 +502,24 @@ Phases 1–5 complete enough for gate criteria
 **Goal:** Usable local web UI for setup, KB, session, export — keep frontend thin.
 
 #### Files
-`ui/routes.py`, `ui/templates/`, `ui/static/` (minimal)
+`ui/routes.py`, `ui/templates/`, `ui/static/` (minimal), `ui/state.py`
 
-#### Steps
-1. Camera preview thumbnails (low-rate).  
+#### Delivered
+1. Camera preview thumbnails (low-rate `/preview.jpg`).  
 2. Session: transcript, suggestions, retrieval snippets.  
 3. KB import + discovery confirm.  
 4. Settings: cameras, models, sampling, **speech mode**.  
-5. **Export session** button → markdown download/save.  
+5. **Export session** → markdown download/save.  
 6. Voice status: listening / thinking / speaking.  
-7. `retroassist serve` → localhost.  
+7. `retroassist serve` → localhost UI.  
 
 #### Dependencies
-Phase 5.5; Phase 6 optional but preferred for full UX  
+Phase 5.5; Phase 6 preferred for full UX  
 
 #### Testing
-- E2E checklist with virtual camera  
+- E2E checklist with virtual camera ([ui-e2e-checklist.md](ui-e2e-checklist.md))  
 - Export round-trip  
-- Mocked smoke in CI  
+- Mocked smoke in CI (`tests/unit/test_ui_routes.py`)  
 
 ---
 

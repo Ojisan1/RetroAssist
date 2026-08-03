@@ -26,9 +26,11 @@ dependencies = [
     "chromadb>=0.5",
     "fastapi>=0.115",
     "httpx>=0.27",
+    "jinja2>=3.1",
     "numpy>=1.26",
     "opencv-python-headless>=4.8",
     "pymupdf>=1.24",
+    "python-multipart>=0.0.9",
     "pyyaml>=6.0",
     "uvicorn[standard]>=0.30",
 ]
@@ -49,6 +51,10 @@ retroassist = "retroassist.__main__:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/retroassist"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/retroassist/ui/templates" = "retroassist/ui/templates"
+"src/retroassist/ui/static" = "retroassist/ui/static"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

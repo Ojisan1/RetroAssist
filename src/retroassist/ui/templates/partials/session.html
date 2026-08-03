@@ -1,0 +1,72 @@
+<section class="session">
+  <h2>Session</h2>
+  <p class="meta">id {{ session.session_id[:8] }}…</p>
+
+  <h3>Intake</h3>
+  {% if session.intake %}
+  <p><strong>{{ session.intake.symptom }}</strong></p>
+  <p class="meta">{{ session.intake.visual_notes or "(no notes)" }}</p>
+  {% else %}
+  <p class="meta">No intake yet.</p>
+  {% endif %}
+
+  <h3>Transcript</h3>
+  <ul class="transcript">
+    {% for line in state.transcript_lines[-40:] %}
+    <li>{{ line }}</li>
+    {% else %}
+    <li class="meta">(empty)</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Observations</h3>
+  {% for obs in session.observations[-5:] %}
+  <article class="card-lite">
+    <p>{{ obs.summary }}</p>
+    {% if obs.latency_ms is defined and obs.latency_ms is not none %}
+    <p class="meta">latency {{ "%.1f"|format(obs.latency_ms) }} ms</p>
+    {% endif %}
+  </article>
+  {% else %}
+  <p class="meta">None yet.</p>
+  {% endfor %}
+
+  <h3>Retrieval</h3>
+  {% for block in session.retrievals[-3:] %}
+  <article class="card-lite">
+    <p class="meta">query: {{ block.query }}</p>
+    {% for hit in block.hits[:3] %}
+    <p class="snippet">{{ hit.source }}{% if hit.page %} p.{{ hit.page }}{% endif %}: {{ (hit.text or "")[:160] }}</p>
+    {% else %}
+    <p class="meta">No hits (empty KB — no fabricated citations).</p>
+    {% endfor %}
+  </article>
+  {% else %}
+  <p class="meta">No retrieval yet.</p>
+  {% endfor %}
+
+  <h3>Suggestions</h3>
+  {% for sug in session.suggestions[-5:] %}
+  <article class="card-lite">
+    <p><strong>{{ sug.action }}</strong></p>
+    <p>{{ sug.expected_result }}</p>
+    <p class="meta">{{ sug.rationale }}</p>
+    {% if sug.safety_notes %}
+    <ul class="safety">
+      {% for note in sug.safety_notes %}
+      <li>{{ note }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% if sug.citations %}
+    <p class="meta">Citations:
+      {% for c in sug.citations %}
+      {{ c.source }}{% if not loop.last %}; {% endif %}
+      {% endfor %}
+    </p>
+    {% endif %}
+  </article>
+  {% else %}
+  <p class="meta">None yet.</p>
+  {% endfor %}
+</section>

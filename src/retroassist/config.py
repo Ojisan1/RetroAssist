@@ -79,6 +79,11 @@ def default_config_dict() -> dict[str, Any]:
             "cloud_opt_in": False,  # explicit only; never required
             "cloud_stt_url": None,
         },
+        "ui": {
+            "mock_agents": True,  # mocked VLM/agent for local UI smoke / CI
+            "preview_interval_ms": 2000,
+            "default_fixture_image": None,  # optional path; else sample fixture
+        },
         "safety": {
             "require_human_confirmation_on_hv": True,
             "include_cautionary_framing": True,

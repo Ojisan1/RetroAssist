@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Knowledge · RetroAssist{% endblock %}
+{% block content %}
+<section class="narrow">
+  <h1>Knowledge base</h1>
+  <p class="lede">Import local docs. Discovery lists candidates only — confirm before import.</p>
+  <p class="meta">Chunks indexed: {{ kb_count }}</p>
+
+  <form class="stack" method="post" action="/knowledge/import" enctype="multipart/form-data">
+    <h2>Import file</h2>
+    <label>Markdown / PDF / image
+      <input type="file" name="file" required>
+    </label>
+    <button type="submit">Import</button>
+  </form>
+
+  <form class="stack" method="post" action="/knowledge/discover">
+    <h2>Assisted discovery</h2>
+    <label>Platform query
+      <input name="platform" required placeholder="Apple II PSU">
+    </label>
+    <button type="submit">Find candidates</button>
+  </form>
+
+  {% if candidates %}
+  <h2>Candidates (not imported yet)</h2>
+  <ul class="candidates">
+    {% for c in candidates %}
+    <li>
+      <strong>{{ c.title }}</strong>
+      <div class="meta">{{ c.domain }} · {{ c.reason }}</div>
+      <div class="meta">{{ c.source_url }}</div>
+      <form method="post" action="/knowledge/confirm" class="row">
+        <input type="hidden" name="index" value="{{ loop.index0 }}">
+        <button type="submit">Confirm and import</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+{% endblock %}

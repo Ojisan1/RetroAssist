@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Workbench · RetroAssist{% endblock %}
+{% block content %}
+<section class="workbench">
+  <div class="preview-col">
+    <h1>Workbench</h1>
+    <p class="lede">Session, camera preview, and next-step suggestions.</p>
+    <figure class="preview">
+      <img id="cam-preview"
+           src="/preview.jpg"
+           alt="Camera or fixture preview"
+           width="480"
+           height="360">
+      <figcaption>Preview (low-rate). Fixture/zero-camera OK for CI.</figcaption>
+    </figure>
+    <script>
+      (function () {
+        var ms = {{ preview_interval_ms }};
+        setInterval(function () {
+          var img = document.getElementById("cam-preview");
+          if (img) img.src = "/preview.jpg?t=" + Date.now();
+        }, ms);
+      })();
+    </script>
+
+    <form class="stack" method="post" action="/session/intake">
+      <h2>Intake</h2>
+      <label>Symptom
+        <input name="symptom" required placeholder="No power at all.">
+      </label>
+      <label>Visual notes
+        <input name="notes" placeholder="PSU on the bench">
+      </label>
+      <button type="submit">Save intake</button>
+    </form>
+
+    <form class="row" method="post" action="/session/look-now">
+      <button type="submit">Look now</button>
+    </form>
+
+    <form class="stack" method="post" action="/session/ask">
+      <h2>Ask / next step</h2>
+      <label>Query
+        <input name="query" required placeholder="What should I check next?">
+      </label>
+      <button type="submit">Ask</button>
+    </form>
+
+    <form class="stack" method="post" action="/session/measure">
+      <h2>Report measurement</h2>
+      <label>Text
+        <input name="text" required placeholder="Fuse reads open">
+      </label>
+      <button type="submit">Report</button>
+    </form>
+
+    <p><a class="button" href="/session/export">Export session (markdown)</a></p>
+  </div>
+
+  <div class="session-col"
+       id="session-panel"
+       hx-get="/partials/session"
+       hx-trigger="load, every 3s"
+       hx-swap="innerHTML">
+    {% include "partials/session.html" %}
+  </div>
+</section>
+{% endblock %}

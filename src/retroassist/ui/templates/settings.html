@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Settings · RetroAssist{% endblock %}
+{% block content %}
+<section class="narrow">
+  <h1>Settings</h1>
+  <p class="lede">Cameras, models, sampling, and speech mode. Saved to platform config.yaml.</p>
+
+  <form class="stack" method="post" action="/settings">
+    <label>Speech mode
+      <select name="speech_mode">
+        <option value="ptt" {% if speech_mode == "ptt" %}selected{% endif %}>ptt</option>
+        <option value="open_mic" {% if speech_mode == "open_mic" %}selected{% endif %}>open_mic</option>
+      </select>
+    </label>
+
+    <label>Model tier
+      <select name="model_tier">
+        {% for tier in ["entry", "recommended", "high_end"] %}
+        <option value="{{ tier }}" {% if model_tier == tier %}selected{% endif %}>{{ tier }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>Continuous FPS
+      <input type="number" step="0.1" name="continuous_fps"
+             value="{{ state.config.raw.sampling.continuous_fps }}">
+    </label>
+    <label>Active FPS
+      <input type="number" step="0.1" name="active_fps"
+             value="{{ state.config.raw.sampling.active_fps }}">
+    </label>
+
+    <label>Camera device (index or name, e.g. OBS Virtual Camera)
+      <input name="camera_device"
+             placeholder="0 or OBS Virtual Camera"
+             value="{% if state.config.camera_sources() %}{{ state.config.camera_sources()[0].device }}{% endif %}">
+    </label>
+    <label>Camera role
+      <select name="camera_role">
+        <option value="overview">overview</option>
+        <option value="close_up">close_up</option>
+      </select>
+    </label>
+
+    <label class="check">
+      <input type="checkbox" name="mock_agents" value="on" {% if state.mock %}checked{% endif %}>
+      Use mock agents for UI (recommended for CI / offline)
+    </label>
+
+    <p class="meta">Resolved models: llm={{ models.llm }} · vision={{ models.vision }}</p>
+    <button type="submit">Save settings</button>
+  </form>
+</section>
+{% endblock %}

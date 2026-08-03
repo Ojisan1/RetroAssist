@@ -130,6 +130,7 @@ def test_default_config_dict_has_expected_keys() -> None:
         "vision",
         "rag",
         "agent",
+        "ui",
         "server",
     ):
         assert key in data
@@ -137,6 +138,7 @@ def test_default_config_dict_has_expected_keys() -> None:
     assert speech["mode"] == "ptt"
     assert speech["cloud_opt_in"] is False
     assert "vad_energy_threshold" in speech
+    assert data["ui"]["mock_agents"] is True
 
 
 def test_speech_settings_merge(tmp_path: Path) -> None:

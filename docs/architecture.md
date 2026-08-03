@@ -10,7 +10,7 @@ High-level module map for RetroAssist:
 | Reasoning / agent loop | Session context, intake, next-step suggestions, safety framing | **Phase 5 implemented** |
 | Text vertical slice gate | CLI session + mocked visual suite before speech/UI | **Phase 5.5 GREEN** |
 | Speech (STT / TTS) | Local speech in/out; PTT + continuous modes | **Phase 6 implemented** |
-| User interface | Thin local UI for setup, KB management, review, session export | FastAPI `/health` stub (Phase 7+) |
+| User interface | Thin local UI for setup, KB management, review, session export | **Phase 7 implemented** |
 
 ## Phase 1 foundation
 
@@ -44,6 +44,13 @@ High-level module map for RetroAssist:
 - **CLI:** `retroassist listen` (transcript / audio fixture / mock); text fallback always available
 - **Docs:** [speech.md](speech.md)
 - **CI:** audio fixtures under `tests/fixtures/audio/`; no live mic required
+
+## Phase 7 thin UI
+
+- **Routes** (`ui/routes.py` + Jinja2/HTMX templates): workbench, knowledge, settings
+- **State** (`ui/state.py`): in-process agent session, voice status, fixture/camera preview
+- **Serve:** `retroassist serve` → localhost UI ([ui.md](ui.md))
+- **CI:** mocked FastAPI smoke + export round-trip; manual [ui-e2e-checklist.md](ui-e2e-checklist.md)
 
 ## Phase 4 knowledge / RAG
 

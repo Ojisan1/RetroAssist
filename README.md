@@ -4,7 +4,7 @@ Local-first, open-source workbench assistant for skilled electronics technicians
 
 RetroAssist combines live visual observation of the workbench (cameras / OBS Virtual Camera), retrieval of schematics and service documentation, and multimodal LLMs to suggest logical next diagnostic steps—primarily via hands-free voice interaction.
 
-**Status:** Pre-alpha. Phases 0–6 complete: text vertical slice gate green; speech (PTT/open-mic) available with mocked CI path (thin UI still Phase 7).
+**Status:** Pre-alpha. Phases 0-7 complete: text gate, speech, and thin local UI (installer polish still Phase 8).
 
 ## Disclaimer
 
@@ -59,6 +59,7 @@ MIT — see [LICENSE](LICENSE).
 - [Knowledge base / RAG](docs/knowledge-base.md)
 - [Vertical slice gate (Phase 5.5)](docs/vertical-slice.md)
 - [Speech (STT + TTS)](docs/speech.md)
+- [Thin UI](docs/ui.md)
 
 ## Private test fixtures
 
@@ -93,7 +94,7 @@ Draft interactive setup: `scripts/setup.ps1` (Windows) or `scripts/setup.sh` (Li
 | Command | Purpose |
 |---------|---------|
 | `retroassist doctor` | Environment checks |
-| `retroassist serve` | Thin FastAPI stub |
+| `retroassist serve` | Thin local UI (workbench / KB / settings) |
 | `retroassist test-visual --basic` | Phase 5.5 mocked visual+agent gate suite |
 | `retroassist session run --case ps01 --out session.md --mock` | One-shot text slice → markdown export |
 | `retroassist listen --mock --case ps01 --transcript "..."` | Phase 6 voice turn (mock STT/TTS) |

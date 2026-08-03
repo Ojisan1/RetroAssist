@@ -90,6 +90,11 @@ agent:
   require_safety_framing: true
   strip_fabricated_citations_when_empty_kb: true
 
+ui:
+  mock_agents: true # mocked VLM/agent for CI and offline serve
+  preview_interval_ms: 2000
+  # default_fixture_image: null
+
 server:
   host: "127.0.0.1"
   port: 8765
