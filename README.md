@@ -66,4 +66,9 @@ Do **not** commit copyrighted manuals or YouTube-derived frames. Real private ke
 pip install -e ".[dev]"
 ruff check .
 pytest
+retroassist doctor --skip-llm
 ```
+
+Draft interactive setup: `scripts/setup.ps1` (Windows) or `scripts/setup.sh` (Linux).
+
+CLI (Phase 1): `retroassist doctor`, `retroassist serve`.

@@ -1,0 +1,58 @@
+# RetroAssist example configuration
+# Copy to:
+#   Windows: %APPDATA%/RetroAssist/config.yaml
+#   Linux:   ~/.config/retroassist/config.yaml
+# Or place config.yaml in the project root for a local override (highest priority).
+
+# OpenAI-compatible endpoint (Ollama default)
+llm:
+  base_url: "http://127.0.0.1:11434/v1"
+  api_key: "ollama" # Ollama ignores this; required by some OpenAI clients
+  timeout_seconds: 120
+
+# Hardware tier selects default model names (see llm/models.py)
+# entry | recommended | high_end
+models:
+  tier: recommended
+  # Optional overrides (null = use tier profile)
+  llm: null
+  vision: null
+  embedding: null
+
+cameras:
+  # Example:
+  # - id: overview
+  #   device: 0            # index or exact device name (e.g. OBS Virtual Camera)
+  #   role: overview       # overview | close_up | other
+  # - id: closeup
+  #   device: "OBS Virtual Camera"
+  #   role: close_up
+  sources: []
+
+sampling:
+  continuous_fps: 0.4 # ~0.3–0.5 fps background observation
+  active_fps: 1.0 # up to ~1 fps while actively probing
+  change_detection: true
+  on_demand_enabled: true
+
+data_dirs:
+  # Relative paths are resolved against the platform config directory
+  knowledge_base: "knowledge"
+  sessions: "sessions"
+  cache: "cache"
+
+speech:
+  mode: ptt # ptt | open_mic
+
+safety:
+  require_human_confirmation_on_hv: true
+  include_cautionary_framing: true
+
+latency:
+  log_enabled: true
+  look_now_target_seconds: 6.0
+  voice_turnaround_target_seconds: 3.0
+
+server:
+  host: "127.0.0.1"
+  port: 8765

@@ -1,8 +1,15 @@
 # Installation
 
-Installation instructions will be expanded in later phases (interactive setup scripts, model download, camera configuration).
+Full interactive installer polish lands in Phase 8. Draft setup scripts are available now.
 
-## Current scaffold (developers)
+## Draft setup scripts
+
+- Windows: `scripts/setup.ps1`
+- Linux/macOS: `scripts/setup.sh`
+
+These prompt for hardware tier and speech mode (`ptt` / `open_mic`), install the package editable with dev extras, and copy `config.example.yaml` into the platform config directory if missing.
+
+## Manual developer install
 
 Requires Python 3.11+.
 
@@ -19,8 +26,11 @@ uv sync --extra dev
 Verify:
 
 ```bash
-retroassist
+retroassist doctor --skip-llm
+retroassist doctor
 pytest
 ```
+
+Config search order: built-in defaults → `%APPDATA%/RetroAssist/config.yaml` (Windows) or `~/.config/retroassist/config.yaml` (Linux) → project-root `config.yaml` → `--config` path → environment overrides (`RETROASSIST_*`).
 
 Windows and Linux are both intended targets; Windows is the primary end-user platform.
