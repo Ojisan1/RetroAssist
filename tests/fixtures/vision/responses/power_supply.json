@@ -1,0 +1,13 @@
+{
+  "case_id": "power_supply",
+  "notes": "Synthetic PSU board with a highlighted fuse-like region.",
+  "observation": {
+    "summary": "Power supply board area visible with a distinct fuse-like component highlighted.",
+    "board_visible": true,
+    "components": ["fuse", "PCB", "connectors"],
+    "tools_or_meters": [],
+    "damage_or_anomalies": ["Possible blown or stressed fuse region (uncertain from still)."],
+    "meter_reading": null,
+    "uncertainties": ["Cannot confirm fuse continuity from an image alone."]
+  }
+}

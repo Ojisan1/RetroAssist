@@ -5,7 +5,7 @@ High-level module map for RetroAssist:
 | Module | Responsibility | Status |
 |--------|----------------|--------|
 | Capture / vision input | USB cams, capture cards, OBS Virtual Camera; multi-cam; adaptive sampling | **Phase 2 implemented** |
-| Multimodal understanding | Local VLM frame analysis | Interface only (Phase 3+) |
+| Multimodal understanding | Local VLM frame analysis | **Phase 3 implemented** |
 | Retrieval (RAG) | User-imported PDFs/images/notes; optional assisted web discovery | Interface only (Phase 4+) |
 | Reasoning / agent loop | Session context, intake, next-step suggestions, safety framing | Interface only (Phase 5+) |
 | Speech (STT / TTS) | Local speech in/out; PTT + continuous modes | Interface only (Phase 6+) |
@@ -19,6 +19,13 @@ High-level module map for RetroAssist:
 - **Interfaces** (`interfaces.py`): Capture, Vision, RAG, Agent, STT, TTS protocols
 - **Doctor** (`doctor.py` + CLI): local environment checks
 - **Serve** (`app.py` + CLI): thin FastAPI app
+
+## Phase 3 vision
+
+- **Schema** (`vision/schema.py`): structured observation + free-text fallback parsing
+- **Prompts** (`vision/prompts.py`): electronics-bench multimodal JSON instructions; multi-image roles
+- **Analyzer** (`vision/analyzer.py`): frames/`EncodedFrame` → VLM → observation; cache; supersede stale looks; latency fields vs 4–6s target (logged, not a hard CI gate)
+- **Mock store** (`vision/mock_store.py` + `tests/fixtures/vision/responses/`): recorded VLM responses for CI keyframes
 
 ## Phase 2 capture
 

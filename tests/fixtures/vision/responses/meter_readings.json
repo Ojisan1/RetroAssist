@@ -1,0 +1,13 @@
+{
+  "case_id": "meter_readings",
+  "notes": "Synthetic DMM display showing 0.00 V.",
+  "observation": {
+    "summary": "Digital multimeter display is visible and reads approximately 0.00 V.",
+    "board_visible": false,
+    "components": [],
+    "tools_or_meters": ["digital multimeter"],
+    "damage_or_anomalies": [],
+    "meter_reading": "0.00 V",
+    "uncertainties": ["Probe placement and meter range are not fully confirmed from this still."]
+  }
+}

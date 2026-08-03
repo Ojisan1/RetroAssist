@@ -1,0 +1,13 @@
+{
+  "case_id": "logic_board",
+  "notes": "Synthetic dense logic/PCB with IC-like blocks.",
+  "observation": {
+    "summary": "Populated logic board with multiple IC-like packages; no obvious damage visible.",
+    "board_visible": true,
+    "components": ["ICs", "PCB traces"],
+    "tools_or_meters": [],
+    "damage_or_anomalies": [],
+    "meter_reading": null,
+    "uncertainties": ["Chip markings are not readable at this resolution."]
+  }
+}

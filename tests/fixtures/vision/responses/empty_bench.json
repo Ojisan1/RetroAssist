@@ -1,0 +1,13 @@
+{
+  "case_id": "empty_bench",
+  "notes": "Synthetic empty workbench; no board visible.",
+  "observation": {
+    "summary": "Empty workbench surface; no electronics board is visible in frame.",
+    "board_visible": false,
+    "components": [],
+    "tools_or_meters": [],
+    "damage_or_anomalies": [],
+    "meter_reading": null,
+    "uncertainties": ["Camera may be pointed away from the device under test."]
+  }
+}

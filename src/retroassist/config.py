@@ -74,6 +74,10 @@ def default_config_dict() -> dict[str, Any]:
             "look_now_target_seconds": 6.0,
             "voice_turnaround_target_seconds": 3.0,
         },
+        "vision": {
+            "max_images": 4,
+            "jpeg_quality": 85,
+        },
         "server": {
             "host": "127.0.0.1",
             "port": 8765,

@@ -127,6 +127,7 @@ def test_default_config_dict_has_expected_keys() -> None:
         "speech",
         "safety",
         "latency",
+        "vision",
         "server",
     ):
         assert key in data
