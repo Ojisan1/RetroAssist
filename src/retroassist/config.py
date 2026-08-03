@@ -138,6 +138,44 @@ def _load_yaml(path: Path) -> dict[str, Any]:
     return data
 
 
+def apply_setup_overrides(
+    config_path: Path,
+    *,
+    tier: str,
+    speech_mode: str,
+    whisper_model: str | None = None,
+    stt_provider: str | None = None,
+) -> dict[str, Any]:
+    """Patch platform/user config.yaml with installer choices (Phase 8).
+
+    Creates the file from defaults if missing. Returns the overrides applied.
+    """
+    mode = speech_mode.strip().lower()
+    if mode not in ("ptt", "open_mic"):
+        raise ValueError(f"speech.mode must be 'ptt' or 'open_mic', got {speech_mode!r}")
+    # Validate tier via resolve_model_names
+    resolve_model_names(tier)
+
+    overrides: dict[str, Any] = {
+        "models": {"tier": tier},
+        "speech": {"mode": mode},
+    }
+    if whisper_model is not None:
+        overrides["speech"]["whisper_model"] = whisper_model
+    if stt_provider is not None:
+        overrides["speech"]["stt_provider"] = stt_provider
+
+    path = config_path.expanduser()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    existing = _load_yaml(path) if path.is_file() else {}
+    if not existing:
+        existing = deepcopy(default_config_dict())
+    merged = deep_merge(existing, overrides)
+    with path.open("w", encoding="utf-8") as handle:
+        yaml.safe_dump(merged, handle, sort_keys=False, default_flow_style=False)
+    return overrides
+
+
 def apply_env_overrides(data: dict[str, Any]) -> dict[str, Any]:
     """Apply a small set of documented env overrides."""
     result = deepcopy(data)

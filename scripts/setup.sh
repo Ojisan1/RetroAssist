@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Draft interactive setup for RetroAssist (Phase 1)
-# Full installer polish lands in Phase 8.
+# RetroAssist interactive setup (Phase 8)
+# Models are not bundled — optional ollama pull commands are printed at the end.
 
 set -euo pipefail
 
-echo "RetroAssist setup (draft)"
-echo "========================="
+echo "RetroAssist setup"
+echo "================="
 
 if ! command -v python3 >/dev/null 2>&1; then
   echo "Python 3 was not found on PATH. Install Python 3.11+ and re-run." >&2
@@ -23,7 +23,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 echo
-echo "Hardware tier (affects default model names):"
+echo "Hardware tier (default model names; see docs/hardware.md):"
 echo "  1) entry       (12-16 GB VRAM)"
 echo "  2) recommended (24 GB VRAM)  [default]"
 echo "  3) high_end    (32 GB+ VRAM)"
@@ -45,6 +45,47 @@ else
   SPEECH="ptt"
 fi
 
+echo
+echo "Install profile:"
+echo "  1) base          — runtime only (end-user default)"
+echo "  2) base+speech   — optional faster-whisper + mic support"
+echo "  3) dev           — base + pytest/ruff (contributors)"
+read -r -p "Choose profile [1-3]: " PROFILE_CHOICE
+EXTRAS=""
+WITH_SPEECH=0
+case "${PROFILE_CHOICE:-1}" in
+  2) EXTRAS="speech"; WITH_SPEECH=1 ;;
+  3) EXTRAS="dev"; WITH_SPEECH=0 ;;
+  *) EXTRAS=""; WITH_SPEECH=0 ;;
+esac
+
+WHISPER="base"
+STT_PROVIDER="mock"
+if [[ "$WITH_SPEECH" == "1" ]]; then
+  echo
+  echo "Whisper model size (downloaded on first live STT use):"
+  echo "  1) tiny"
+  echo "  2) base  [default]"
+  echo "  3) small"
+  read -r -p "Choose Whisper size [1-3]: " W_CHOICE
+  case "${W_CHOICE:-2}" in
+    1) WHISPER="tiny" ;;
+    3) WHISPER="small" ;;
+    *) WHISPER="base" ;;
+  esac
+  read -r -p "Set speech.stt_provider=whisper now? [y/N]: " USE_LIVE
+  if [[ "${USE_LIVE:-}" =~ ^[Yy]$ ]]; then
+    STT_PROVIDER="whisper"
+  fi
+fi
+
+echo
+read -r -p "Print ollama pull commands for this tier? [Y/n]: " PULL_MODELS
+DO_PULL_HINTS=1
+if [[ "${PULL_MODELS:-}" =~ ^[Nn]$ ]]; then
+  DO_PULL_HINTS=0
+fi
+
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/retroassist"
 mkdir -p "$CONFIG_DIR"
 CONFIG_PATH="$CONFIG_DIR/config.yaml"
@@ -55,20 +96,56 @@ if [[ ! -f "$CONFIG_PATH" && -f "$ROOT/config.example.yaml" ]]; then
 fi
 
 echo
-echo "Installing package (editable, with dev extras)..."
-python3 -m pip install -e ".[dev]"
+if [[ -n "$EXTRAS" ]]; then
+  echo "Installing package (editable, extras=[$EXTRAS])..."
+  python3 -m pip install -e ".[${EXTRAS}]"
+else
+  echo "Installing package (editable, base)..."
+  python3 -m pip install -e .
+fi
+
+echo
+echo "Persisting tier/speech settings to $CONFIG_PATH ..."
+python3 - "$CONFIG_PATH" "$TIER" "$SPEECH" "$WHISPER" "$STT_PROVIDER" <<'PY'
+from pathlib import Path
+import sys
+from retroassist.config import apply_setup_overrides
+
+path, tier, speech, whisper, stt = sys.argv[1:6]
+apply_setup_overrides(
+    Path(path),
+    tier=tier,
+    speech_mode=speech,
+    whisper_model=whisper,
+    stt_provider=stt,
+)
+print("Updated config overrides.")
+PY
 
 export RETROASSIST_MODEL_TIER="$TIER"
 export RETROASSIST_SPEECH_MODE="$SPEECH"
+
 echo
-echo "Selected tier=$TIER speech=$SPEECH (exported for this shell session)."
-echo "Edit $CONFIG_PATH to persist settings."
+echo "Ensuring data directories..."
+python3 -c "from retroassist.doctor import ensure_platform_dirs; print('\\n'.join(str(p) for p in ensure_platform_dirs()))"
+
+PROFILE_LABEL="${EXTRAS:-base}"
 echo
-echo "Next: ensure Ollama is installed and running, then:"
-echo "  retroassist doctor"
+echo "Selected: tier=$TIER speech=$SPEECH profile=$PROFILE_LABEL stt=$STT_PROVIDER whisper=$WHISPER"
+echo
+echo "Next steps:"
+echo "  # Offline / no GPU — mock path (always works after install):"
+echo "  retroassist doctor --skip-llm"
+echo "  retroassist test-visual --basic"
 echo "  retroassist serve"
 echo
-echo "Model pulls (examples; adjust to your tier):"
-echo "  ollama pull qwen2.5vl:11b"
-echo "  ollama pull qwen2.5:14b"
-echo "  ollama pull nomic-embed-text"
+echo "  # Live models (optional; install Ollama separately):"
+echo "  retroassist doctor"
+echo
+echo "See docs/installation.md for the full quickstart and degradation matrix."
+
+if [[ "$DO_PULL_HINTS" == "1" ]]; then
+  echo
+  echo "Suggested model pulls for tier=$TIER (not run automatically; models are not bundled):"
+  python3 -c "from retroassist.llm.models import get_profile; p = get_profile('$TIER'); print(f'  ollama pull {p.vision}'); print(f'  ollama pull {p.llm}'); print(f'  ollama pull {p.embedding}')"
+fi

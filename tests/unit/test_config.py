@@ -146,3 +146,28 @@ def test_speech_settings_merge(tmp_path: Path) -> None:
     settings = cfg.speech_settings
     assert settings["stt_provider"] == "mock"
     assert cfg.voice_turnaround_target_seconds == 3.0
+
+
+def test_apply_setup_overrides_persists_choices(tmp_path: Path) -> None:
+    from retroassist.config import apply_setup_overrides
+
+    path = tmp_path / "config.yaml"
+    apply_setup_overrides(
+        path,
+        tier="entry",
+        speech_mode="open_mic",
+        whisper_model="tiny",
+        stt_provider="whisper",
+    )
+    loaded = yaml.safe_load(path.read_text(encoding="utf-8"))
+    assert loaded["models"]["tier"] == "entry"
+    assert loaded["speech"]["mode"] == "open_mic"
+    assert loaded["speech"]["whisper_model"] == "tiny"
+    assert loaded["speech"]["stt_provider"] == "whisper"
+
+    apply_setup_overrides(path, tier="recommended", speech_mode="ptt")
+    again = yaml.safe_load(path.read_text(encoding="utf-8"))
+    assert again["models"]["tier"] == "recommended"
+    assert again["speech"]["mode"] == "ptt"
+    # Prior speech fields preserved when not re-specified
+    assert again["speech"]["whisper_model"] == "tiny"

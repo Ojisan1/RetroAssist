@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import platform
+import shutil
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -10,6 +11,9 @@ from pathlib import Path
 from retroassist import __version__
 from retroassist.config import AppConfig, load_config, platform_config_dir
 from retroassist.llm.client import LLMClient, LLMUnavailableError
+
+# Warn / fail install verification when free space on data volume is below this.
+DISK_MIN_FREE_BYTES = 1 * 1024 * 1024 * 1024  # 1 GiB
 
 
 @dataclass
@@ -105,6 +109,7 @@ async def run_doctor(
         path = cfg.resolve_data_path(key)
         report.add(f"data_dir.{key}", True, str(path))
 
+    _add_disk_checks(report, cfg)
     _add_capture_checks(report, cfg)
     _add_rag_checks(report, cfg)
 
@@ -142,6 +147,33 @@ async def run_doctor(
                 await llm.aclose()
 
     return report
+
+
+def _add_disk_checks(report: DoctorReport, cfg: AppConfig) -> None:
+    """Validate free space on the volume hosting knowledge/sessions/cache."""
+    paths = [cfg.resolve_data_path(k) for k in ("knowledge_base", "sessions", "cache")]
+    # Prefer an existing ancestor so disk_usage works before dirs exist.
+    probe = next((p for p in paths if p.exists()), None)
+    if probe is None:
+        probe = paths[0]
+        for ancestor in [probe, *probe.parents]:
+            if ancestor.exists():
+                probe = ancestor
+                break
+
+    try:
+        usage = shutil.disk_usage(probe)
+    except OSError as exc:
+        report.add("disk", False, f"unable to read free space at {probe}: {exc}")
+        return
+
+    free_gib = usage.free / (1024**3)
+    total_gib = usage.total / (1024**3)
+    ok = usage.free >= DISK_MIN_FREE_BYTES
+    detail = f"{free_gib:.1f} GiB free of {total_gib:.1f} GiB at {probe}"
+    if not ok:
+        detail += f" (need >= {DISK_MIN_FREE_BYTES / (1024**3):.0f} GiB free)"
+    report.add("disk", ok, detail)
 
 
 def _add_capture_checks(report: DoctorReport, cfg: AppConfig) -> None:

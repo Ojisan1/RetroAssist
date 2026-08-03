@@ -4,7 +4,7 @@ Local-first, open-source workbench assistant for skilled electronics technicians
 
 RetroAssist combines live visual observation of the workbench (cameras / OBS Virtual Camera), retrieval of schematics and service documentation, and multimodal LLMs to suggest logical next diagnostic steps—primarily via hands-free voice interaction.
 
-**Status:** Pre-alpha. Phases 0-7 complete: text gate, speech, and thin local UI (installer polish still Phase 8).
+**Status:** v0.1.0 — Phases 0–8 complete (installer, docs, distribution bar). Models are not bundled.
 
 ## Disclaimer
 
@@ -16,6 +16,19 @@ You remain fully responsible for all actions taken while using it.
 Never rely solely on this tool for high-voltage work, CRT service, or any procedure that could cause injury, fire, or further damage to equipment. Always cross-check critical steps against primary documentation and your own judgment.
 
 See [docs/safety.md](docs/safety.md) for the full safety and responsibility statement.
+
+## Quickstart (no GPU)
+
+```bash
+pip install -e .
+retroassist doctor --skip-llm
+retroassist test-visual --basic
+retroassist serve
+```
+
+Full install (interactive tier / speech / optional `[speech]`), live Ollama pulls, degradation matrix, and Windows checklist: **[docs/installation.md](docs/installation.md)**.
+
+Interactive setup: `scripts/setup.ps1` (Windows) or `scripts/setup.sh` (Linux).
 
 ## Goals
 
@@ -40,7 +53,7 @@ See [docs/safety.md](docs/safety.md) for the full safety and responsibility stat
 | Recommended | 24 GB | Larger VLMs, smoother multi-image + longer context |
 | High-end | 32 GB+ | Maximum quality and future headroom |
 
-System: 32 GB RAM minimum (64 GB preferred), modern multi-core CPU, fast NVMe, good USB bandwidth for cameras. A GPU is not required merely to install the package; model quality scales with hardware.
+System: 32 GB RAM minimum (64 GB preferred), modern multi-core CPU, fast NVMe, good USB bandwidth for cameras. A GPU is not required merely to install the package; model quality scales with hardware. Details: [docs/hardware.md](docs/hardware.md).
 
 ## License
 
@@ -48,11 +61,11 @@ MIT — see [LICENSE](LICENSE).
 
 ## Documentation
 
+- [Installation / quickstart](docs/installation.md)
 - [Product specification](docs/ProjectSpec.md)
 - [Testing strategy](docs/testing-strategy.md)
 - [Safety and responsibility](docs/safety.md)
 - [Hardware](docs/hardware.md)
-- [Installation](docs/installation.md)
 - [Architecture](docs/architecture.md)
 - [Session export](docs/session-export.md)
 - [Live proxy testing (OBS Virtual Camera)](docs/live-proxy.md)
@@ -60,6 +73,8 @@ MIT — see [LICENSE](LICENSE).
 - [Vertical slice gate (Phase 5.5)](docs/vertical-slice.md)
 - [Speech (STT + TTS)](docs/speech.md)
 - [Thin UI](docs/ui.md)
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
 
 ## Private test fixtures
 
@@ -67,33 +82,20 @@ Do **not** commit copyrighted manuals or YouTube-derived frames. Real private ke
 
 ## Development
 
-Base (required for normal work / CI mock speech path):
-
 ```bash
 pip install -e ".[dev]"
-```
-
-Optional live speech engines (faster-whisper + mic support) — **not required** for mock STT/TTS or CI:
-
-```bash
-pip install -e ".[speech]"
-# or: pip install -e ".[dev,speech]"
-```
-
-```bash
+# optional live speech: pip install -e ".[speech]"
 ruff check .
 pytest
 retroassist doctor --skip-llm
 retroassist test-visual --basic
 ```
 
-Draft interactive setup: `scripts/setup.ps1` (Windows) or `scripts/setup.sh` (Linux).
-
 ### CLI
 
 | Command | Purpose |
 |---------|---------|
-| `retroassist doctor` | Environment checks |
+| `retroassist doctor` | Environment checks (cameras, Ollama, disk) |
 | `retroassist serve` | Thin local UI (workbench / KB / settings) |
 | `retroassist test-visual --basic` | Phase 5.5 mocked visual+agent gate suite |
 | `retroassist session run --case ps01 --out session.md --mock` | One-shot text slice → markdown export |

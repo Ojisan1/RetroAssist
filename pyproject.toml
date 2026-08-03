@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "retroassist"
-version = "0.1.0a1"
+version = "0.1.0"
 description = "Local-first workbench assistant for classic electronics repair"
 readme = "README.md"
 license = "MIT"
@@ -14,7 +14,7 @@ authors = [
 ]
 keywords = ["electronics", "repair", "vintage", "multimodal", "local-ai"]
 classifiers = [
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",

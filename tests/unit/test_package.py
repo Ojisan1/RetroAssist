@@ -12,7 +12,7 @@ from retroassist.interfaces import (
 
 
 def test_version_is_set() -> None:
-    assert __version__ == "0.1.0a1"
+    assert __version__ == "0.1.0"
 
 
 def test_interfaces_are_abstract() -> None:

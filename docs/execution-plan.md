@@ -527,17 +527,20 @@ Phase 5.5; Phase 6 preferred for full UX
 **Goal:** ProjectSpec §9 bar for outsiders.
 
 #### Files
-Full `setup.ps1`/`setup.sh`, complete docs, CHANGELOG, tag `v0.1.0`
+Full `setup.ps1`/`setup.sh`, complete docs, CHANGELOG; tag `v0.1.0` prepared in changelog/version (cut separately when approved)
 
-#### Steps
-1. Interactive install: tier, models, optional STT size.  
-2. Doctor validates cameras, Ollama, disk.  
-3. Quickstart including mock/fixture mode without GPU.  
-4. Document degradation matrix + latency expectations.  
-5. Public GitHub release notes (models not bundled).  
+#### Delivered
+1. Interactive install: tier, speech mode, base / `[speech]` / `[dev]`, optional Whisper size, printed Ollama pull hints (models not bundled).  
+2. Doctor validates cameras, Ollama, and disk free space (≥ ~1 GiB).  
+3. Quickstart including mock/fixture mode without GPU ([installation.md](installation.md)).  
+4. Degradation matrix + latency expectations in installation docs.  
+5. CHANGELOG / CONTRIBUTING / version `0.1.0` for a later public GitHub release (tag/release not created in-repo until explicitly requested).  
 
 #### Testing
-Clean Windows install from docs only.  
+- Unit: setup config overrides, doctor disk check.  
+- Docs checklist: clean Windows install from [installation.md](installation.md).  
+
+**Phase 8 status:** Implementation complete; green when clean-install checklist verified on a Windows machine. Do not start Phase 9 until this gate is accepted.
 
 ---
 

@@ -60,6 +60,7 @@ async def test_doctor_pass_with_mock_llm(tmp_path: Path, mock_cameras: None) -> 
     assert "python" in names
     assert "llm" in names
     assert "models" in names
+    assert "disk" in names
     assert "capture" in names
     assert "capture.devices" in names
     text = format_report(report)
