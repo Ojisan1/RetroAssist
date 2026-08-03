@@ -63,7 +63,21 @@ def default_config_dict() -> dict[str, Any]:
             "cache": "cache",
         },
         "speech": {
-            "mode": "ptt",
+            "mode": "ptt",  # ptt | open_mic
+            "stt_provider": "mock",  # mock | whisper
+            "tts_provider": "mock",  # mock | piper
+            "whisper_model": "base",
+            "whisper_device": "cpu",
+            "piper_binary": "piper",
+            "piper_voice_model": None,  # path to .onnx voice
+            "sample_rate": 16000,
+            "vad_energy_threshold": 0.02,
+            "vad_silence_ms": 700,
+            "vad_min_speech_ms": 250,
+            "ptt_max_seconds": 15.0,
+            "open_mic_max_seconds": 20.0,
+            "cloud_opt_in": False,  # explicit only; never required
+            "cloud_stt_url": None,
         },
         "safety": {
             "require_human_confirmation_on_hv": True,
@@ -176,8 +190,26 @@ class AppConfig:
         return mode  # type: ignore[return-value]
 
     @property
+    def speech_settings(self) -> dict[str, Any]:
+        """Resolved speech block with defaults applied."""
+        speech = dict(self.raw.get("speech") or {})
+        defaults = default_config_dict()["speech"]
+        for key, value in defaults.items():
+            speech.setdefault(key, value)
+        mode = str(speech.get("mode", "ptt")).strip().lower()
+        if mode not in ("ptt", "open_mic"):
+            raise ValueError(f"speech.mode must be 'ptt' or 'open_mic', got {mode!r}")
+        speech["mode"] = mode
+        speech["cloud_opt_in"] = bool(speech.get("cloud_opt_in", False))
+        return speech
+
+    @property
     def latency_log_enabled(self) -> bool:
         return bool(self.raw["latency"]["log_enabled"])
+
+    @property
+    def voice_turnaround_target_seconds(self) -> float:
+        return float(self.raw["latency"]["voice_turnaround_target_seconds"])
 
     @property
     def safety_flags(self) -> dict[str, bool]:

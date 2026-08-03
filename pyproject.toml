@@ -39,6 +39,10 @@ dev = [
     "pytest-asyncio>=0.24",
     "ruff>=0.6",
 ]
+speech = [
+    "faster-whisper>=1.0",
+    "sounddevice>=0.4",
+]
 
 [project.scripts]
 retroassist = "retroassist.__main__:main"

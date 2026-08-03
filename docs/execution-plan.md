@@ -472,16 +472,16 @@ Phases 1–5 complete enough for gate criteria
 **Goal:** Hands-free primary I/O with **configurable PTT and open-mic**.
 
 #### Files
-`speech/stt.py`, `tts.py`, `dialogue.py`, `modes.py`
+`speech/stt.py`, `tts.py`, `dialogue.py`, `modes.py` (+ `intents.py`)
 
-#### Steps
-1. **Config:** `speech.mode: ptt | open_mic` (and UI toggle later).  
-2. **PTT:** hold/toggle to capture utterance → STT → agent → TTS.  
-3. **Open-mic:** continuous listen + VAD in private workshop assumption; barge-in stops TTS.  
-4. Intents: look_now, next_step, report_measurement, clarify, stop_speaking, export_session (optional).  
-5. Voice turnaround target **&lt; 2–3s** when possible; log actuals.  
-6. Optional cloud speech behind explicit opt-in only.  
-7. Text fallback always available.  
+#### Delivered
+1. **Config:** `speech.mode: ptt | open_mic` plus VAD, providers, cloud opt-in (default false).  
+2. **PTT / open-mic** in `modes.py` with energy VAD and barge-in → TTS `stop()`.  
+3. **STT/TTS:** mock (CI) + faster-whisper / Piper for live; optional `[speech]` extra.  
+4. **Intents:** look_now, next_step, report_measurement, clarify, stop_speaking, export_session.  
+5. **Latency:** `voice_turnaround` logged vs 2–3s target.  
+6. **CLI:** `retroassist listen`; text fallback always available.  
+7. **Docs:** [speech.md](speech.md).
 
 #### Dependencies
 **Phase 5.5 gate green**; Phase 2 for look-now triggers  

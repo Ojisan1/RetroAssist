@@ -4,7 +4,7 @@ Local-first, open-source workbench assistant for skilled electronics technicians
 
 RetroAssist combines live visual observation of the workbench (cameras / OBS Virtual Camera), retrieval of schematics and service documentation, and multimodal LLMs to suggest logical next diagnostic steps—primarily via hands-free voice interaction.
 
-**Status:** Pre-alpha. Phases 0–5.5 complete: text vertical slice gate is green on the mocked CI path (speech/UI still ahead).
+**Status:** Pre-alpha. Phases 0–6 complete: text vertical slice gate green; speech (PTT/open-mic) available with mocked CI path (thin UI still Phase 7).
 
 ## Disclaimer
 
@@ -58,6 +58,7 @@ MIT — see [LICENSE](LICENSE).
 - [Live proxy testing (OBS Virtual Camera)](docs/live-proxy.md)
 - [Knowledge base / RAG](docs/knowledge-base.md)
 - [Vertical slice gate (Phase 5.5)](docs/vertical-slice.md)
+- [Speech (STT + TTS)](docs/speech.md)
 
 ## Private test fixtures
 
@@ -65,8 +66,20 @@ Do **not** commit copyrighted manuals or YouTube-derived frames. Real private ke
 
 ## Development
 
+Base (required for normal work / CI mock speech path):
+
 ```bash
 pip install -e ".[dev]"
+```
+
+Optional live speech engines (faster-whisper + mic support) — **not required** for mock STT/TTS or CI:
+
+```bash
+pip install -e ".[speech]"
+# or: pip install -e ".[dev,speech]"
+```
+
+```bash
 ruff check .
 pytest
 retroassist doctor --skip-llm
@@ -83,5 +96,6 @@ Draft interactive setup: `scripts/setup.ps1` (Windows) or `scripts/setup.sh` (Li
 | `retroassist serve` | Thin FastAPI stub |
 | `retroassist test-visual --basic` | Phase 5.5 mocked visual+agent gate suite |
 | `retroassist session run --case ps01 --out session.md --mock` | One-shot text slice → markdown export |
+| `retroassist listen --mock --case ps01 --transcript "..."` | Phase 6 voice turn (mock STT/TTS) |
 
-Stepwise text slice: `session intake` → `look-now` → `next` → `export`. See [docs/vertical-slice.md](docs/vertical-slice.md).
+Stepwise text slice: `session intake` → `look-now` → `next` → `export`. Voice: see [docs/speech.md](docs/speech.md).

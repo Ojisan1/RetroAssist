@@ -23,6 +23,17 @@ Or with [uv](https://github.com/astral-sh/uv):
 uv sync --extra dev
 ```
 
+### Optional speech engines
+
+Not required for mock STT/TTS, CI, or `retroassist listen --mock`. Install only for live Whisper/mic support:
+
+```bash
+pip install -e ".[speech]"
+# or combine: pip install -e ".[dev,speech]"
+```
+
+Piper TTS needs an external `piper` binary and voice model path in config (see [speech.md](speech.md)).
+
 Verify:
 
 ```bash

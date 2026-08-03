@@ -49,6 +49,20 @@ data_dirs:
 
 speech:
   mode: ptt # ptt | open_mic
+  stt_provider: mock # mock | whisper (faster-whisper; install [speech])
+  tts_provider: mock # mock | piper (requires piper binary + voice model)
+  whisper_model: base
+  whisper_device: cpu
+  piper_binary: piper
+  # piper_voice_model: null  # path to Piper .onnx voice
+  sample_rate: 16000
+  vad_energy_threshold: 0.02
+  vad_silence_ms: 700
+  vad_min_speech_ms: 250
+  ptt_max_seconds: 15.0
+  open_mic_max_seconds: 20.0
+  cloud_opt_in: false # optional cloud STT; never required
+  # cloud_stt_url: null
 
 safety:
   require_human_confirmation_on_hv: true

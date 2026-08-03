@@ -133,3 +133,14 @@ def test_default_config_dict_has_expected_keys() -> None:
         "server",
     ):
         assert key in data
+    speech = data["speech"]
+    assert speech["mode"] == "ptt"
+    assert speech["cloud_opt_in"] is False
+    assert "vad_energy_threshold" in speech
+
+
+def test_speech_settings_merge(tmp_path: Path) -> None:
+    cfg = load_config(platform_dir=tmp_path)
+    settings = cfg.speech_settings
+    assert settings["stt_provider"] == "mock"
+    assert cfg.voice_turnaround_target_seconds == 3.0

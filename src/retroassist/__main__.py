@@ -145,6 +145,53 @@ def build_parser() -> argparse.ArgumentParser:
         help="Comma-separated fixture stems (e.g. ps01,meter01)",
     )
 
+    listen_p = sub.add_parser(
+        "listen",
+        help="Voice turn: STT → intent → agent → TTS (mock audio/text for CI)",
+    )
+    listen_p.add_argument(
+        "--mode",
+        choices=("ptt", "open_mic"),
+        default=None,
+        help="Override speech.mode for this run",
+    )
+    listen_p.add_argument(
+        "--mock",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Mock STT/TTS + mocked agent/vision (default: true)",
+    )
+    listen_p.add_argument(
+        "--transcript",
+        default=None,
+        help="Skip mic/STT and use this text (typed voice fallback)",
+    )
+    listen_p.add_argument(
+        "--audio",
+        default=None,
+        help="WAV/PCM audio file to transcribe (mock STT may use sidecar JSON)",
+    )
+    listen_p.add_argument(
+        "--case",
+        default=None,
+        help="Query fixture stem to seed intake/vision/agent mock (e.g. ps01)",
+    )
+    listen_p.add_argument(
+        "--agent-case",
+        default="ps01",
+        help="Mock agent response case when not using --case",
+    )
+    listen_p.add_argument(
+        "--image",
+        default=None,
+        help="Optional fixture image for look_now intent",
+    )
+    listen_p.add_argument(
+        "--state",
+        default=None,
+        help="Optional CLI session state path (persist agent session)",
+    )
+
     return parser
 
 
@@ -179,6 +226,10 @@ def main(argv: list[str] | None = None) -> None:
 
     if args.command == "test-visual":
         raise SystemExit(asyncio.run(_test_visual(args)))
+
+    if args.command == "listen":
+        cfg = load_config(config_path=config_path)
+        raise SystemExit(asyncio.run(_listen_command(cfg, args)))
 
     parser.error(f"Unknown command: {args.command}")
 
@@ -303,6 +354,109 @@ async def _test_visual(args: argparse.Namespace) -> int:
         shutil.rmtree(tmp, ignore_errors=True)
     print("\n".join(report.summary_lines()))
     return 0 if report.ok else 1
+
+
+async def _listen_command(cfg: object, args: argparse.Namespace) -> int:
+    """One voice turn (transcript, audio file, or mock mic) — text fallback always works."""
+    from retroassist.cli_session import SliceState, build_agent_for_state, load_query_case
+    from retroassist.config import AppConfig
+    from retroassist.paths import fixtures_root
+    from retroassist.speech.dialogue import VoiceDialogue
+    from retroassist.speech.modes import SpeechModeController
+    from retroassist.speech.stt import MockSpeechToText, create_stt, load_fixture_transcript
+    from retroassist.speech.tts import create_tts
+    from retroassist.vision.analyzer import frames_from_image_paths
+
+    assert isinstance(cfg, AppConfig)
+    if args.mode:
+        cfg.raw.setdefault("speech", {})["mode"] = args.mode
+
+    work = Path(args.state).parent if args.state else cfg.resolve_data_path("sessions")
+    work.mkdir(parents=True, exist_ok=True)
+    work_dir = work / ".listen-work"
+    work_dir.mkdir(parents=True, exist_ok=True)
+
+    state = SliceState(mock=bool(args.mock))
+    image_path: Path | None = Path(args.image) if args.image else None
+
+    if args.case:
+        case = load_query_case(str(args.case).lower())
+        state.vision_case = str(case.get("vision_case") or args.case)
+        state.agent_case = str(case.get("agent_case") or args.case)
+        state.kb_samples = [str(x) for x in (case.get("kb_samples") or [])]
+        state.empty_kb = not bool(case.get("use_kb"))
+        image_path = fixtures_root() / "images" / case["image"]
+        agent = await build_agent_for_state(state, config=cfg, work_dir=work_dir)
+        await agent.intake(str(case["symptom"]), str(case.get("visual_notes") or ""))
+        default_transcript = str(case["query"])
+    else:
+        state.agent_case = args.agent_case
+        agent = await build_agent_for_state(state, config=cfg, work_dir=work_dir)
+        default_transcript = "What should I check next?"
+
+    frames_provider = None
+    if image_path is not None and image_path.is_file():
+
+        def _frames() -> list:
+            return frames_from_image_paths([str(image_path)])
+
+        frames_provider = _frames
+
+    tts = create_tts(cfg, force_mock=bool(args.mock))
+    stt = create_stt(cfg, force_mock=bool(args.mock))
+    dialogue = VoiceDialogue(
+        agent=agent,
+        stt=stt,
+        tts=tts,
+        modes=SpeechModeController.from_config(cfg, on_barge_in=tts.stop),
+        config=cfg,
+        look_now_frames_provider=frames_provider,
+    )
+
+    try:
+        if args.transcript:
+            result = await dialogue.handle_transcript(args.transcript)
+        elif args.audio:
+            audio_path = Path(args.audio)
+            sidecar = audio_path.with_suffix(".json")
+            if isinstance(stt, MockSpeechToText) and sidecar.is_file():
+                stt.set_transcript(load_fixture_transcript(sidecar))
+            audio_bytes = audio_path.read_bytes()
+            result = await dialogue.handle_audio(audio_bytes)
+        elif args.mock:
+            # Default mock turn without mic
+            result = await dialogue.handle_transcript(default_transcript)
+        else:
+            print(
+                "Live mic listen requires audio hardware integration; "
+                "use --transcript, --audio, or --mock for now.",
+                file=sys.stderr,
+            )
+            return 2
+    except Exception as exc:  # noqa: BLE001
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+
+    def _out(line: str) -> None:
+        try:
+            print(line)
+        except UnicodeEncodeError:
+            print(line.encode(sys.stdout.encoding or "utf-8", errors="replace").decode(
+                sys.stdout.encoding or "utf-8", errors="replace"
+            ))
+
+    _out(f"intent: {result.intent.value}")
+    _out(f"transcript: {result.transcript}")
+    _out(f"spoken: {result.spoken_text}")
+    _out(
+        f"latency_ms: {result.latency_ms:.1f} "
+        f"(target={dialogue.voice_target_seconds}s within={result.within_target})"
+    )
+    if result.suggestion:
+        _out(f"action: {result.suggestion.get('action')}")
+    if result.export_path:
+        _out(f"export: {result.export_path}")
+    return 0
 
 
 def _serve(cfg: object, *, host: str, port: int) -> None:

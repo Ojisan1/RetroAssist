@@ -72,7 +72,17 @@ async def run_doctor(
 
     try:
         mode = cfg.speech_mode
-        report.add("speech", True, f"mode={mode}")
+        settings = cfg.speech_settings
+        report.add(
+            "speech",
+            True,
+            (
+                f"mode={mode} stt={settings.get('stt_provider')} "
+                f"tts={settings.get('tts_provider')} "
+                f"cloud_opt_in={settings.get('cloud_opt_in')}"
+            ),
+        )
+        _add_speech_engine_checks(report, cfg)
     except ValueError as exc:
         report.add("speech", False, str(exc))
 
@@ -198,6 +208,53 @@ def _add_rag_checks(report: DoctorReport, cfg: AppConfig) -> None:
             )
     except Exception as exc:  # noqa: BLE001
         report.add("rag", True, f"KB path {persist_dir} (init deferred: {exc})")
+
+
+def _add_speech_engine_checks(report: DoctorReport, cfg: AppConfig) -> None:
+    """Optional STT/TTS backend availability (non-fatal if mock-only)."""
+    settings = cfg.speech_settings
+    stt = str(settings.get("stt_provider", "mock")).lower()
+    tts = str(settings.get("tts_provider", "mock")).lower()
+
+    if stt == "whisper":
+        try:
+            import faster_whisper  # noqa: F401
+
+            report.add(
+                "speech.stt",
+                True,
+                f"faster-whisper ok (model={settings.get('whisper_model')})",
+            )
+        except ImportError:
+            report.add(
+                "speech.stt",
+                False,
+                "stt_provider=whisper but faster-whisper missing; "
+                "optional: pip install 'retroassist[speech]'",
+            )
+    else:
+        report.add("speech.stt", True, f"provider={stt} (CI/mock ok without live mic)")
+
+    if tts == "piper":
+        voice = settings.get("piper_voice_model")
+        if voice and Path(str(voice)).is_file():
+            report.add("speech.tts", True, f"piper voice present: {voice}")
+        else:
+            report.add(
+                "speech.tts",
+                False,
+                "tts_provider=piper requires speech.piper_voice_model path to an .onnx file",
+            )
+    else:
+        report.add("speech.tts", True, f"provider={tts}")
+
+    if settings.get("cloud_opt_in"):
+        url = settings.get("cloud_stt_url")
+        report.add(
+            "speech.cloud",
+            bool(url),
+            "cloud_opt_in enabled" + (f"; url={url}" if url else "; cloud_stt_url missing"),
+        )
 
 
 def _model_present(wanted: str, available: list[str]) -> bool:

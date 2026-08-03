@@ -9,7 +9,7 @@ High-level module map for RetroAssist:
 | Retrieval (RAG) | User-imported PDFs/images/notes; optional assisted web discovery | **Phase 4 implemented** |
 | Reasoning / agent loop | Session context, intake, next-step suggestions, safety framing | **Phase 5 implemented** |
 | Text vertical slice gate | CLI session + mocked visual suite before speech/UI | **Phase 5.5 GREEN** |
-| Speech (STT / TTS) | Local speech in/out; PTT + continuous modes | Interface only (Phase 6+) |
+| Speech (STT / TTS) | Local speech in/out; PTT + continuous modes | **Phase 6 implemented** |
 | User interface | Thin local UI for setup, KB management, review, session export | FastAPI `/health` stub (Phase 7+) |
 
 ## Phase 1 foundation
@@ -34,6 +34,16 @@ High-level module map for RetroAssist:
 - **CLI** (`session` subcommands + `cli_session.py`): intake → look-now → next → export (one-shot `session run --case`)
 - **Suite** (`visual_suite.py`, `tools/run_visual_suite.py`, `retroassist test-visual`): basic gate cases headless
 - **Docs:** [vertical-slice.md](vertical-slice.md)
+
+## Phase 6 speech
+
+- **STT** (`speech/stt.py`): mock + faster-whisper; cloud only with `cloud_opt_in`
+- **TTS** (`speech/tts.py`): mock + Piper CLI; `stop()` for barge-in
+- **Modes** (`speech/modes.py`): PTT and open-mic + energy VAD
+- **Dialogue** (`speech/dialogue.py` + `intents.py`): intent routing into the agent loop; voice latency notes
+- **CLI:** `retroassist listen` (transcript / audio fixture / mock); text fallback always available
+- **Docs:** [speech.md](speech.md)
+- **CI:** audio fixtures under `tests/fixtures/audio/`; no live mic required
 
 ## Phase 4 knowledge / RAG
 

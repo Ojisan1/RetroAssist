@@ -13,8 +13,8 @@ from retroassist.__main__ import build_parser, main
 
 def test_parser_has_phase55_commands() -> None:
     parser = build_parser()
-    for cmd in ("doctor", "serve", "test-visual"):
-        args = parser.parse_args([cmd])
+    for cmd in ("doctor", "serve", "test-visual", "listen"):
+        args = parser.parse_args([cmd] if cmd != "listen" else [cmd, "--transcript", "hi"])
         assert args.command == cmd
     args = parser.parse_args(["session", "export", "--out", "x.md"])
     assert args.command == "session"

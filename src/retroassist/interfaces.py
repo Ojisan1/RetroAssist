@@ -91,3 +91,11 @@ class TextToSpeech(ABC):
     @abstractmethod
     async def synthesize(self, text: str) -> AsyncIterator[bytes]:
         """Yield audio chunks for the given text."""
+
+    def stop(self) -> None:  # noqa: B027 — optional barge-in hook for concrete TTS
+        """Interrupt current synthesis (barge-in). Default no-op."""
+
+    @property
+    def speaking(self) -> bool:
+        """Whether synthesis is in progress."""
+        return False

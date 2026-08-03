@@ -98,7 +98,7 @@ These can be run as integration tests with mocked vision/STT.
 | Phase 3 (Vision)   | Keyframe tests with known boards and meter readings |
 | Phase 4 (RAG)      | Retrieval quality against sample manuals + empty KB behavior |
 | Phase 5 (Agent)    | Full visual + query test cases (table above)       |
-| Phase 6 (Speech)   | Same scenarios via voice (PTT and open-mic)        |
+| Phase 6 (Speech)   | Same scenarios via voice (PTT and open-mic); audio fixtures + intent tests; see [speech.md](speech.md) |
 | Phase 7 (UI/E2E)   | Complete session using virtual camera + text/voice |
 
 ## 7. CI Recommendations
