@@ -272,16 +272,17 @@ Camera frames (or keyframe fixtures)
 **Note on phase numbering:** `testing-strategy.md` lists “Phase 1 + 2 + 4 + 5”; vision analysis is Phase 3 in this plan and is a **hard dependency** of the slice. Treat Phase 3 as in-scope for the gate.
 
 ### Gate criteria (must pass before Phase 6/7)
-- [ ] Basic automated visual + agent cases run headlessly: at least **PS-01, METER-01, EMPTY-01, NO-KB-01** (mocked VLM path in CI; live path locally when possible).  
-- [ ] Text intake works (typed symptom + notes).  
-- [ ] “Look now” produces an observation from capture **or** injected fixture frame.  
-- [ ] With sample KB ingested, suggestions can **cite retrieved content** when relevant.  
-- [ ] Empty KB path degrades without fabricating manual page citations.  
-- [ ] Safety language present on mains/HV-adjacent scenarios (e.g. PS-01).  
-- [ ] Session can be **exported to markdown** with intake, observations, suggestions, timestamps.  
-- [ ] “Look now” latency measured and logged (target &lt; 4–6s on recommended hardware; document actuals).  
-- [ ] Minimal text UI or CLI sufficient to run the slice (full thin web UI polish waits for Phase 7).  
+- [x] Basic automated visual + agent cases run headlessly: at least **PS-01, METER-01, EMPTY-01, NO-KB-01** (mocked VLM path in CI; live path locally when possible).  
+- [x] Text intake works (typed symptom + notes).  
+- [x] “Look now” produces an observation from capture **or** injected fixture frame.  
+- [x] With sample KB ingested, suggestions can **cite retrieved content** when relevant.  
+- [x] Empty KB path degrades without fabricating manual page citations.  
+- [x] Safety language present on mains/HV-adjacent scenarios (e.g. PS-01).  
+- [x] Session can be **exported to markdown** with intake, observations, suggestions, timestamps.  
+- [x] “Look now” latency measured and logged (target &lt; 4–6s on recommended hardware; document actuals).  
+- [x] Minimal text UI or CLI sufficient to run the slice (full thin web UI polish waits for Phase 7).  
 
+**Gate status:** GREEN on mocked CI path (Phase 5.5). See [vertical-slice.md](vertical-slice.md).  
 **Do not start Phase 6/7 heavy work until this gate is green.**
 
 ---
@@ -454,16 +455,16 @@ Phases 3–4 (vision + RAG); fixture injection can stub capture
 ### Phase 5.5 — Vertical Slice Gate (mandatory)
 **Goal:** Prove text-only path before speech/UI investment.
 
-See **§6 Vertical Slice Milestone**. Work items:
+See **§6 Vertical Slice Milestone** and [vertical-slice.md](vertical-slice.md). Delivered:
 
-1. Wire minimal CLI or thin text API: intake → look-now → next → export.  
-2. Run `tools/run_visual_suite.py` (or pytest) on basic suite.  
-3. Manual smoke: OBS VC optional; fixture path required.  
-4. Record latency numbers in docs or session export sample.  
-5. **Go/no-go decision** for Phase 6/7.  
+1. CLI `retroassist session` (`intake` / `look-now` / `next` / `export` / `run`) — `cli_session.py`.  
+2. `retroassist test-visual` + `tools/run_visual_suite.py` on basic suite (`visual_suite.py`).  
+3. Manual smoke: fixture path required; OBS VC optional (`--no-mock`).  
+4. Latency logged on observations + export; mock vs live notes in vertical-slice.md.  
+5. **Go/no-go:** mocked gate GREEN → Phase 6/7 may proceed when product prioritizes them.
 
 #### Dependencies
-Phases 1–5 complete enough for gate criteria  
+Phases 1–5 complete enough for gate criteria 
 
 ---
 

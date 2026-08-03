@@ -110,7 +110,9 @@ These can be run as integration tests with mocked vision/STT.
 
 ## 8. Vertical Slice Acceptance Criteria
 
-The early vertical slice (after Phase 1 + 2 + 4 + 5) must pass a basic set of the automated visual + agent test cases defined above before speech and polished UI work proceeds.
+The early vertical slice (after Phase 1 + 2 + 4 + 5; vision = Phase 3 in the execution plan) must pass a basic set of the automated visual + agent test cases defined above before speech and polished UI work proceeds.
+
+**Phase 5.5 status:** Gate GREEN on mocked path — run `retroassist test-visual --basic` or see [vertical-slice.md](vertical-slice.md).
 
 ## 9. Future Extensions
 

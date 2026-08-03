@@ -4,7 +4,7 @@ Local-first, open-source workbench assistant for skilled electronics technicians
 
 RetroAssist combines live visual observation of the workbench (cameras / OBS Virtual Camera), retrieval of schematics and service documentation, and multimodal LLMs to suggest logical next diagnostic steps—primarily via hands-free voice interaction.
 
-**Status:** Pre-alpha. The repository is being scaffolded; application features are not yet implemented.
+**Status:** Pre-alpha. Phases 0–5.5 complete: text vertical slice gate is green on the mocked CI path (speech/UI still ahead).
 
 ## Disclaimer
 
@@ -57,20 +57,31 @@ MIT — see [LICENSE](LICENSE).
 - [Session export](docs/session-export.md)
 - [Live proxy testing (OBS Virtual Camera)](docs/live-proxy.md)
 - [Knowledge base / RAG](docs/knowledge-base.md)
+- [Vertical slice gate (Phase 5.5)](docs/vertical-slice.md)
 
 ## Private test fixtures
 
 Do **not** commit copyrighted manuals or YouTube-derived frames. Real private keyframes belong only under `tests/fixtures/private/` (gitignored). Public fixtures must be synthetic, public-domain, or clearly licensed.
 
-## Development (scaffold)
+## Development
 
 ```bash
 pip install -e ".[dev]"
 ruff check .
 pytest
 retroassist doctor --skip-llm
+retroassist test-visual --basic
 ```
 
 Draft interactive setup: `scripts/setup.ps1` (Windows) or `scripts/setup.sh` (Linux).
 
-CLI (Phase 1): `retroassist doctor`, `retroassist serve`.
+### CLI
+
+| Command | Purpose |
+|---------|---------|
+| `retroassist doctor` | Environment checks |
+| `retroassist serve` | Thin FastAPI stub |
+| `retroassist test-visual --basic` | Phase 5.5 mocked visual+agent gate suite |
+| `retroassist session run --case ps01 --out session.md --mock` | One-shot text slice → markdown export |
+
+Stepwise text slice: `session intake` → `look-now` → `next` → `export`. See [docs/vertical-slice.md](docs/vertical-slice.md).

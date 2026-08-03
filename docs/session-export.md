@@ -41,4 +41,11 @@ md = agent.export_markdown()
 agent.export_to_path("session.md")
 ```
 
+## CLI (Phase 5.5)
+
+```bash
+retroassist session run --case ps01 --out session.md --mock
+retroassist session export --out session.md
+```
+
 Exports must not invent documentation citations when the knowledge base is empty.

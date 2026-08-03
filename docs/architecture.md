@@ -8,6 +8,7 @@ High-level module map for RetroAssist:
 | Multimodal understanding | Local VLM frame analysis | **Phase 3 implemented** |
 | Retrieval (RAG) | User-imported PDFs/images/notes; optional assisted web discovery | **Phase 4 implemented** |
 | Reasoning / agent loop | Session context, intake, next-step suggestions, safety framing | **Phase 5 implemented** |
+| Text vertical slice gate | CLI session + mocked visual suite before speech/UI | **Phase 5.5 GREEN** |
 | Speech (STT / TTS) | Local speech in/out; PTT + continuous modes | Interface only (Phase 6+) |
 | User interface | Thin local UI for setup, KB management, review, session export | FastAPI `/health` stub (Phase 7+) |
 
@@ -27,6 +28,12 @@ High-level module map for RetroAssist:
 - **Safety** (`agent/safety.py`) — HV/CRT/mains cautionary framing; scrub fabricated manual pages on empty KB
 - **Export** (`agent/export.py`) — markdown session logs ([session-export.md](session-export.md))
 - **CI** — mocked vision + mocked agent LLM keyframe suite (PS-01…NO-KB-01)
+
+## Phase 5.5 vertical slice gate
+
+- **CLI** (`session` subcommands + `cli_session.py`): intake → look-now → next → export (one-shot `session run --case`)
+- **Suite** (`visual_suite.py`, `tools/run_visual_suite.py`, `retroassist test-visual`): basic gate cases headless
+- **Docs:** [vertical-slice.md](vertical-slice.md)
 
 ## Phase 4 knowledge / RAG
 
