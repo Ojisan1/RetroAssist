@@ -28,12 +28,18 @@ cameras:
   #   device: "OBS Virtual Camera"
   #   role: close_up
   sources: []
+  open_timeout_seconds: 5.0
+  reconnect_interval_seconds: 2.0
+  max_reconnect_attempts: 3
+  enumerate_max_index: 10
 
 sampling:
   continuous_fps: 0.4 # ~0.3–0.5 fps background observation
   active_fps: 1.0 # up to ~1 fps while actively probing
   change_detection: true
+  change_threshold: 0.05 # mean abs diff on 64x64 gray (0..1)
   on_demand_enabled: true
+  jpeg_quality: 85
 
 data_dirs:
   # Relative paths are resolved against the platform config directory

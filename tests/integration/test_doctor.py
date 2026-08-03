@@ -7,13 +7,27 @@ from pathlib import Path
 import httpx
 import pytest
 
+from retroassist.capture.base import CameraDeviceInfo
 from retroassist.config import load_config
 from retroassist.doctor import format_report, run_doctor
 from retroassist.llm.client import LLMClient
 
 
+@pytest.fixture
+def mock_cameras(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Avoid opening real VideoCapture devices during doctor tests."""
+
+    def _fake_enumerate(*, max_index: int = 10, probe_frame: bool = True):
+        return [CameraDeviceInfo(index=0, name="OBS Virtual Camera", backend="DSHOW")]
+
+    monkeypatch.setattr(
+        "retroassist.capture.opencv_source.enumerate_devices",
+        _fake_enumerate,
+    )
+
+
 @pytest.mark.asyncio
-async def test_doctor_pass_with_mock_llm(tmp_path: Path) -> None:
+async def test_doctor_pass_with_mock_llm(tmp_path: Path, mock_cameras: None) -> None:
     cfg = load_config(project_root=tmp_path, platform_dir=tmp_path / "platform")
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -40,12 +54,15 @@ async def test_doctor_pass_with_mock_llm(tmp_path: Path) -> None:
     assert "python" in names
     assert "llm" in names
     assert "models" in names
+    assert "capture" in names
+    assert "capture.devices" in names
     text = format_report(report)
     assert "Overall: PASS" in text
+    assert "OBS Virtual Camera" in text
 
 
 @pytest.mark.asyncio
-async def test_doctor_fails_when_llm_down(tmp_path: Path) -> None:
+async def test_doctor_fails_when_llm_down(tmp_path: Path, mock_cameras: None) -> None:
     cfg = load_config(project_root=tmp_path, platform_dir=tmp_path / "platform")
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -63,7 +80,7 @@ async def test_doctor_fails_when_llm_down(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_doctor_skip_llm(tmp_path: Path) -> None:
+async def test_doctor_skip_llm(tmp_path: Path, mock_cameras: None) -> None:
     cfg = load_config(project_root=tmp_path, platform_dir=tmp_path / "platform")
     report = await run_doctor(cfg, check_llm=False)
     assert report.ok

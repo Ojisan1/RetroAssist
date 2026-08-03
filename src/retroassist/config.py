@@ -44,12 +44,18 @@ def default_config_dict() -> dict[str, Any]:
         },
         "cameras": {
             "sources": [],
+            "open_timeout_seconds": 5.0,
+            "reconnect_interval_seconds": 2.0,
+            "max_reconnect_attempts": 3,
+            "enumerate_max_index": 10,
         },
         "sampling": {
             "continuous_fps": 0.4,
             "active_fps": 1.0,
             "change_detection": True,
+            "change_threshold": 0.05,
             "on_demand_enabled": True,
+            "jpeg_quality": 85,
         },
         "data_dirs": {
             "knowledge_base": "knowledge",

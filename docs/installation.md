@@ -34,3 +34,9 @@ pytest
 Config search order: built-in defaults → `%APPDATA%/RetroAssist/config.yaml` (Windows) or `~/.config/retroassist/config.yaml` (Linux) → project-root `config.yaml` → `--config` path → environment overrides (`RETROASSIST_*`).
 
 Windows and Linux are both intended targets; Windows is the primary end-user platform.
+
+## Cameras / OBS Virtual Camera
+
+Configure `cameras.sources` in your config YAML (index or device name). Empty sources enable zero-camera / fixture mode for headless work.
+
+See [live-proxy.md](live-proxy.md) for the manual YouTube → OBS → Virtual Camera testing workflow.

@@ -95,6 +95,8 @@ async def run_doctor(
         path = cfg.resolve_data_path(key)
         report.add(f"data_dir.{key}", True, str(path))
 
+    _add_capture_checks(report, cfg)
+
     if check_llm:
         own_client = client is None
         llm = client or LLMClient(
@@ -129,6 +131,39 @@ async def run_doctor(
                 await llm.aclose()
 
     return report
+
+
+def _add_capture_checks(report: DoctorReport, cfg: AppConfig) -> None:
+    """Non-fatal capture backend + device enumeration."""
+    try:
+        import cv2  # noqa: F401
+
+        from retroassist.capture.opencv_source import enumerate_devices
+    except Exception as exc:  # noqa: BLE001 - doctor must stay resilient
+        report.add("capture", False, f"OpenCV unavailable: {exc}")
+        return
+
+    report.add("capture", True, "opencv-python-headless import ok")
+    # Keep doctor snappy: fewer indices, skip frame probe (open check only).
+    max_index = min(4, int((cfg.raw.get("cameras") or {}).get("enumerate_max_index", 10)))
+    try:
+        devices = enumerate_devices(max_index=max_index, probe_frame=False)
+    except Exception as exc:  # noqa: BLE001
+        report.add("capture.devices", True, f"enumeration skipped: {exc}")
+        return
+
+    configured = cfg.camera_sources()
+    if not devices:
+        detail = "no cameras found (zero-camera / fixture mode still OK for CI)"
+        if configured:
+            detail += f"; config lists {len(configured)} source(s)"
+        report.add("capture.devices", True, detail)
+        return
+
+    preview = ", ".join(f"{d.index}:{d.name}" for d in devices[:8])
+    if len(devices) > 8:
+        preview += ", …"
+    report.add("capture.devices", True, preview)
 
 
 def _model_present(wanted: str, available: list[str]) -> bool:
