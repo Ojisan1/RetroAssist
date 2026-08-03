@@ -6,7 +6,7 @@ High-level module map for RetroAssist:
 |--------|----------------|--------|
 | Capture / vision input | USB cams, capture cards, OBS Virtual Camera; multi-cam; adaptive sampling | **Phase 2 implemented** |
 | Multimodal understanding | Local VLM frame analysis | **Phase 3 implemented** |
-| Retrieval (RAG) | User-imported PDFs/images/notes; optional assisted web discovery | Interface only (Phase 4+) |
+| Retrieval (RAG) | User-imported PDFs/images/notes; optional assisted web discovery | **Phase 4 implemented** |
 | Reasoning / agent loop | Session context, intake, next-step suggestions, safety framing | Interface only (Phase 5+) |
 | Speech (STT / TTS) | Local speech in/out; PTT + continuous modes | Interface only (Phase 6+) |
 | User interface | Thin local UI for setup, KB management, review, session export | FastAPI `/health` stub (Phase 7+) |
@@ -19,6 +19,15 @@ High-level module map for RetroAssist:
 - **Interfaces** (`interfaces.py`): Capture, Vision, RAG, Agent, STT, TTS protocols
 - **Doctor** (`doctor.py` + CLI): local environment checks
 - **Serve** (`app.py` + CLI): thin FastAPI app
+
+## Phase 4 knowledge / RAG
+
+- **Ingest** (`rag/ingest.py`): Markdown/PDF/images → chunks + metadata (`source`, `page`, `platform`)
+- **Store** (`rag/store.py`, `rag/knowledge.py`): Chroma persistence; empty KB → no hits
+- **Retrieve** (`rag/retrieve.py`): query ± optional vision summary
+- **Discovery** (`rag/discovery.py`): candidates only; `confirm_and_import` required before download/index
+- **Embeddings**: default deterministic hashing (CI/offline); optional Ollama
+- **Docs/samples:** [knowledge-base.md](knowledge-base.md), `samples/knowledge/` (synthetic only)
 
 ## Phase 3 vision
 

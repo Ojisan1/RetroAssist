@@ -25,6 +25,12 @@ def mock_cameras(monkeypatch: pytest.MonkeyPatch) -> None:
         _fake_enumerate,
     )
 
+    def _fake_rag(report, cfg) -> None:
+        report.add("rag", True, "provider=hashing chunks=0 path=mock")
+        report.add("rag.empty", True, "knowledge base empty (mocked)")
+
+    monkeypatch.setattr("retroassist.doctor._add_rag_checks", _fake_rag)
+
 
 @pytest.mark.asyncio
 async def test_doctor_pass_with_mock_llm(tmp_path: Path, mock_cameras: None) -> None:

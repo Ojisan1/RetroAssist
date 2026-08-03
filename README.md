@@ -56,6 +56,7 @@ MIT — see [LICENSE](LICENSE).
 - [Architecture](docs/architecture.md)
 - [Session export](docs/session-export.md)
 - [Live proxy testing (OBS Virtual Camera)](docs/live-proxy.md)
+- [Knowledge base / RAG](docs/knowledge-base.md)
 
 ## Private test fixtures
 

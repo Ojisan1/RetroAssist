@@ -63,6 +63,15 @@ vision:
   max_images: 4
   jpeg_quality: 85
 
+rag:
+  embedding_provider: hashing # hashing (offline/CI) | ollama
+  embedding_dimensions: 384
+  chunk_size: 800
+  chunk_overlap: 100
+  collection_name: retroassist_kb
+  discovery_enabled: true
+  # persist_dir: null  # default: <data_dirs.knowledge_base>/chroma
+
 server:
   host: "127.0.0.1"
   port: 8765

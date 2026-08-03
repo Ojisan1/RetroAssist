@@ -96,6 +96,7 @@ async def run_doctor(
         report.add(f"data_dir.{key}", True, str(path))
 
     _add_capture_checks(report, cfg)
+    _add_rag_checks(report, cfg)
 
     if check_llm:
         own_client = client is None
@@ -164,6 +165,39 @@ def _add_capture_checks(report: DoctorReport, cfg: AppConfig) -> None:
     if len(devices) > 8:
         preview += ", …"
     report.add("capture.devices", True, preview)
+
+
+def _add_rag_checks(report: DoctorReport, cfg: AppConfig) -> None:
+    """Report knowledge-base path and chunk count (empty is OK)."""
+    rag = cfg.raw.get("rag") or {}
+    provider = str(rag.get("embedding_provider", "hashing"))
+    kb_root = cfg.resolve_data_path("knowledge_base")
+    persist = rag.get("persist_dir")
+    if persist:
+        persist_dir = Path(str(persist)).expanduser()
+        if not persist_dir.is_absolute():
+            persist_dir = cfg.config_dir / persist_dir
+    else:
+        persist_dir = kb_root / "chroma"
+
+    try:
+        from retroassist.rag.knowledge import LocalKnowledgeStore
+
+        store = LocalKnowledgeStore.from_config(cfg)
+        count = store.count
+        report.add(
+            "rag",
+            True,
+            f"provider={provider} chunks={count} path={persist_dir}",
+        )
+        if count == 0:
+            report.add(
+                "rag.empty",
+                True,
+                "knowledge base empty (NO-KB / graceful degradation OK)",
+            )
+    except Exception as exc:  # noqa: BLE001
+        report.add("rag", True, f"KB path {persist_dir} (init deferred: {exc})")
 
 
 def _model_present(wanted: str, available: list[str]) -> bool:

@@ -78,6 +78,15 @@ def default_config_dict() -> dict[str, Any]:
             "max_images": 4,
             "jpeg_quality": 85,
         },
+        "rag": {
+            "embedding_provider": "hashing",  # hashing | ollama
+            "embedding_dimensions": 384,
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "collection_name": "retroassist_kb",
+            "discovery_enabled": True,
+            "persist_dir": None,  # default: <knowledge_base>/chroma
+        },
         "server": {
             "host": "127.0.0.1",
             "port": 8765,
