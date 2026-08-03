@@ -1,0 +1,16 @@
+{
+  "id": "PS-02",
+  "image": "power_supply/sample.png",
+  "vision_case": "power_supply",
+  "agent_case": "ps02",
+  "symptom": "0V on the 5V rail.",
+  "visual_notes": "Close-up of regulator area.",
+  "query": "I'm getting 0V on the 5V rail",
+  "use_kb": true,
+  "kb_samples": ["synthetic_psu_notes.md"],
+  "expect": {
+    "must_include_any": ["regulator", "input", "capacitor", "upstream"],
+    "safety_mains": true,
+    "citations_required": false
+  }
+}

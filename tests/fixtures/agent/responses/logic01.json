@@ -1,0 +1,12 @@
+{
+  "case_id": "logic01",
+  "suggestion": {
+    "action": "Check clock oscillator activity and confirm reset releases, then inspect the video output path.",
+    "expected_result": "Clock should toggle; reset should release after power-on; video encoder outputs should show activity.",
+    "rationale": "Powers-on-but-no-video with a busy logic board matches clock/reset/video section first-pass checks.",
+    "confidence": 0.7,
+    "safety_notes": [],
+    "citations": [],
+    "task_tags": ["diagnosis"]
+  }
+}

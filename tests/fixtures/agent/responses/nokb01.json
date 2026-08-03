@@ -1,0 +1,12 @@
+{
+  "case_id": "nokb01",
+  "suggestion": {
+    "action": "Rely on visual inspection and general electronics checks (power rails, clock/reset, obvious damage) since no local manual is loaded.",
+    "expected_result": "Establish basic powers, clocks, and visible faults without citing specific Apple II manual pages.",
+    "rationale": "Knowledge base is empty; use general electronics knowledge plus the live visual observation only.",
+    "confidence": 0.55,
+    "safety_notes": [],
+    "citations": [],
+    "task_tags": ["diagnosis"]
+  }
+}

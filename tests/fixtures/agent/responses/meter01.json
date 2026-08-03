@@ -1,0 +1,12 @@
+{
+  "case_id": "meter01",
+  "suggestion": {
+    "action": "Acknowledge the 0.00 V reading and probe upstream of the 12V rail for feed presence and local shorts.",
+    "expected_result": "Upstream node should show expected voltage if the rail is open downstream; near 0V everywhere may indicate a short or missing supply.",
+    "rationale": "Vision shows a multimeter reading about 0.00 V while probing the 12V rail.",
+    "confidence": 0.78,
+    "safety_notes": [],
+    "citations": [],
+    "task_tags": ["diagnosis"]
+  }
+}

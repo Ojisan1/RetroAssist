@@ -7,7 +7,7 @@ High-level module map for RetroAssist:
 | Capture / vision input | USB cams, capture cards, OBS Virtual Camera; multi-cam; adaptive sampling | **Phase 2 implemented** |
 | Multimodal understanding | Local VLM frame analysis | **Phase 3 implemented** |
 | Retrieval (RAG) | User-imported PDFs/images/notes; optional assisted web discovery | **Phase 4 implemented** |
-| Reasoning / agent loop | Session context, intake, next-step suggestions, safety framing | Interface only (Phase 5+) |
+| Reasoning / agent loop | Session context, intake, next-step suggestions, safety framing | **Phase 5 implemented** |
 | Speech (STT / TTS) | Local speech in/out; PTT + continuous modes | Interface only (Phase 6+) |
 | User interface | Thin local UI for setup, KB management, review, session export | FastAPI `/health` stub (Phase 7+) |
 
@@ -19,6 +19,14 @@ High-level module map for RetroAssist:
 - **Interfaces** (`interfaces.py`): Capture, Vision, RAG, Agent, STT, TTS protocols
 - **Doctor** (`doctor.py` + CLI): local environment checks
 - **Serve** (`app.py` + CLI): thin FastAPI app
+
+## Phase 5 agent
+
+- **Session / intake / context** — text intake, rolling measurements & steps tried
+- **Loop** (`agent/loop.py`) — look_now (vision) → retrieve (RAG) → grounded suggestions
+- **Safety** (`agent/safety.py`) — HV/CRT/mains cautionary framing; scrub fabricated manual pages on empty KB
+- **Export** (`agent/export.py`) — markdown session logs ([session-export.md](session-export.md))
+- **CI** — mocked vision + mocked agent LLM keyframe suite (PS-01…NO-KB-01)
 
 ## Phase 4 knowledge / RAG
 

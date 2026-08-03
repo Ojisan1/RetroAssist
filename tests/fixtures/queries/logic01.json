@@ -1,0 +1,16 @@
+{
+  "id": "LOGIC-01",
+  "image": "logic_board/sample.png",
+  "vision_case": "logic_board",
+  "agent_case": "logic01",
+  "symptom": "Powers on but no video.",
+  "visual_notes": "Busy logic board, no obvious damage.",
+  "query": "It powers on but no video. Where do I start?",
+  "use_kb": true,
+  "kb_samples": ["synthetic_logic_notes.md"],
+  "expect": {
+    "must_include_any": ["clock", "reset", "video"],
+    "safety_mains": false,
+    "citations_required": true
+  }
+}

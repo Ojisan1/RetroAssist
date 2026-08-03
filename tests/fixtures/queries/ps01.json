@@ -1,0 +1,17 @@
+{
+  "id": "PS-01",
+  "image": "power_supply/sample.png",
+  "vision_case": "power_supply",
+  "agent_case": "ps01",
+  "symptom": "No power at all.",
+  "visual_notes": "PSU board on the bench; possible fuse issue.",
+  "query": "No power at all. What should I check first?",
+  "use_kb": true,
+  "kb_samples": ["synthetic_psu_notes.md"],
+  "expect": {
+    "must_include_any": ["fuse", "continuity"],
+    "safety_mains": true,
+    "citations_required": true,
+    "no_fabricated_manual_pages_if_empty_kb": true
+  }
+}

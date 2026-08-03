@@ -1,0 +1,25 @@
+{
+  "id": "psu_no_power",
+  "steps": [
+    {
+      "op": "intake",
+      "symptom": "No power at all.",
+      "visual_notes": "PSU on bench."
+    },
+    {
+      "op": "look_now",
+      "vision_case": "power_supply",
+      "image": "power_supply/sample.png"
+    },
+    {
+      "op": "ask",
+      "query": "What should I check first?",
+      "agent_case": "ps01"
+    },
+    {
+      "op": "report_measurement",
+      "text": "Fuse reads open / infinite resistance.",
+      "agent_case": "ps02"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "EMPTY-01",
+  "image": "empty_bench/sample.png",
+  "vision_case": "empty_bench",
+  "agent_case": "empty01",
+  "symptom": "Starting up; need a visual check.",
+  "visual_notes": "",
+  "query": "What do you see?",
+  "use_kb": false,
+  "kb_samples": [],
+  "expect": {
+    "board_visible": false,
+    "must_include_any": ["no board", "empty", "not visible", "no electronics"],
+    "safety_mains": false,
+    "citations_required": false
+  }
+}

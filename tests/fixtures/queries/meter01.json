@@ -1,0 +1,17 @@
+{
+  "id": "METER-01",
+  "image": "meter_readings/sample.png",
+  "vision_case": "meter_readings",
+  "agent_case": "meter01",
+  "symptom": "Probing the 12V rail, reading zero.",
+  "visual_notes": "Multimeter in view.",
+  "query": "Probing the 12V rail, reading zero",
+  "use_kb": true,
+  "kb_samples": ["synthetic_psu_notes.md"],
+  "expect": {
+    "must_include_any": ["0.00", "zero", "upstream", "12V", "rail"],
+    "acknowledge_meter": true,
+    "safety_mains": false,
+    "citations_required": false
+  }
+}

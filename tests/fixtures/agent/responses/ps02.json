@@ -1,0 +1,14 @@
+{
+  "case_id": "ps02",
+  "suggestion": {
+    "action": "Measure the regulator input voltage and inspect nearby input/output capacitors for failure.",
+    "expected_result": "If the 5V output is 0V, confirm whether the regulator input is present and stable.",
+    "rationale": "Zero on the 5V rail with a PSU board in view points to upstream feed or regulator/capacitor issues.",
+    "confidence": 0.75,
+    "safety_notes": [
+      "Be mindful of mains-derived rails on the power supply; verify isolation before probing."
+    ],
+    "citations": [],
+    "task_tags": ["diagnosis"]
+  }
+}

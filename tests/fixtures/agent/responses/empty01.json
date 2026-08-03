@@ -1,0 +1,12 @@
+{
+  "case_id": "empty01",
+  "suggestion": {
+    "action": "Reposition the camera so the device under test is in frame; no board is currently visible.",
+    "expected_result": "The overview should show the PCB or chassis before diagnostic probing continues.",
+    "rationale": "Vision reports an empty workbench with no electronics board visible.",
+    "confidence": 0.9,
+    "safety_notes": [],
+    "citations": [],
+    "task_tags": ["diagnosis"]
+  }
+}

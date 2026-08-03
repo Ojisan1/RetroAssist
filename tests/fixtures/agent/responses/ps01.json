@@ -1,0 +1,14 @@
+{
+  "case_id": "ps01",
+  "suggestion": {
+    "action": "With power disconnected, visually inspect the mains fuse and check continuity across it.",
+    "expected_result": "A healthy fuse shows near 0 Ω continuity; an open fuse indicates it has blown.",
+    "rationale": "Vision suggests a fuse-like region on the PSU, intake reports no power, and retrieved notes prioritize fuse checks first.",
+    "confidence": 0.82,
+    "safety_notes": [
+      "Mains voltage hazard: unplug the unit and ensure capacitors are discharged before probing. You remain fully responsible."
+    ],
+    "citations": [],
+    "task_tags": ["diagnosis"]
+  }
+}

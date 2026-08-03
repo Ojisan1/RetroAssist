@@ -72,6 +72,10 @@ rag:
   discovery_enabled: true
   # persist_dir: null  # default: <data_dirs.knowledge_base>/chroma
 
+agent:
+  require_safety_framing: true
+  strip_fabricated_citations_when_empty_kb: true
+
 server:
   host: "127.0.0.1"
   port: 8765

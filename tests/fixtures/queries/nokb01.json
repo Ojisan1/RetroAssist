@@ -1,0 +1,18 @@
+{
+  "id": "NO-KB-01",
+  "image": "logic_board/sample.png",
+  "vision_case": "logic_board",
+  "agent_case": "nokb01",
+  "symptom": "Help me diagnose this Apple II.",
+  "visual_notes": "Board visible; no manuals imported.",
+  "query": "Help me diagnose this Apple II",
+  "use_kb": false,
+  "kb_samples": [],
+  "expect": {
+    "kb_empty": true,
+    "no_fabricated_citations": true,
+    "must_include_any": ["general", "visual", "observation", "no local manual", "knowledge"],
+    "safety_mains": false,
+    "citations_required": false
+  }
+}

@@ -87,6 +87,10 @@ def default_config_dict() -> dict[str, Any]:
             "discovery_enabled": True,
             "persist_dir": None,  # default: <knowledge_base>/chroma
         },
+        "agent": {
+            "require_safety_framing": True,
+            "strip_fabricated_citations_when_empty_kb": True,
+        },
         "server": {
             "host": "127.0.0.1",
             "port": 8765,
